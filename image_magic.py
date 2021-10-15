@@ -30,22 +30,38 @@ def to_greyscale(pixel: tuple, algo="average") -> tuple:
 
     return grey, grey, grey
 
+def brighter(pixel: tuple, magnitude: int) -> tuple:
+    """ Increases the brightness of a pixel
 
-# def to_greyscale_luma(pixel: tuple) -> tuple:
-#     """Convert to greyscale using luma algorithm.
-#
-#     Args:
-#         pixel: a 3-tuple of ints from 0-255, e.g. (140, 120, 255)
-#             represents (red, green, blue)
-#
-#     Returns:
-#         a 3-tuple pixel (r, g, b) in greyscale
-#     """
-#     red, green, blue = pixel
-#
-#     grey = int(red * 0.3 + green * 0.59 + blue * 0.11)
-#
-#     return grey, grey, grey
+    Args:
+        pixel a 3-tuple of (red, green, blue) subpixels
+
+        magnitude: an int from 0-255 that indicates how much to increase brightness
+
+    Returns:
+        a 3-tuple representing a brighter pixel
+    """
+    # break down the pixel into subpixels
+    red, green, blue = pixel
+
+    MAX = 255
+
+    if red + magnitude > MAX:
+        red = MAX
+    else:
+        red += magnitude
+
+    if green + magnitude > MAX:
+        green = MAX
+    else:
+        green += magnitude
+
+    if blue + magnitude > MAX:
+        blue = MAX
+    else:
+        blue += magnitude
+
+    return red, green, blue
 
 
 # Load the image (pumpkin)
@@ -64,6 +80,21 @@ image_height = image.height
 # Take the r, g, b, add them up and divide by 3
 # replace r g b with the average
 
+# # top to bottom
+# for y in range(image_height):
+#     # Left to right
+#     for x in range(image_width):
+#         # Grab pixel information for THIS pixel
+#         pixel = image.getpixel((x, y))
+#
+#         # call to_greyscale
+#         grey_pixel = to_greyscale(pixel, "average")
+#
+#         # put that in new image
+#         output_image.putpixel((x, y), grey_pixel)
+#
+# output_image.save(f'greyscale2.jpg')
+
 # top to bottom
 for y in range(image_height):
     # Left to right
@@ -71,10 +102,8 @@ for y in range(image_height):
         # Grab pixel information for THIS pixel
         pixel = image.getpixel((x, y))
 
-        # call to_greyscale
-        grey_pixel = to_greyscale(pixel, "average")
+        brighter_pixel = brighter(pixel, 50)
 
-        # put that in new image
-        output_image.putpixel((x, y), grey_pixel)
+        output_image.putpixel((x, y), brighter_pixel)
 
-output_image.save(f'greyscale2.jpg')
+output_image.save('brighterer.jpg')

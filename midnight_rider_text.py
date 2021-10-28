@@ -12,3 +12,10 @@ WE CAN'T LET THEM HAVE IT.
 ONE GOAL: SURVIVAL... AND THE CAR
 REACH THE SAFEHOUSE BEFORE THE MAN GON GETCHU.
 """
+
+CHOICES = """
+    --- Your Choices ---
+    Q - Quit the game.
+    ---
+    
+"""

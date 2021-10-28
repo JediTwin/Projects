@@ -40,9 +40,31 @@ class Vehicle:
         print("Vroom" * self.max_speed)
 
 
+class Bus(Vehicle):
+    """Bus is a vehicle that can drive humans around in it"""
+    def fare(self, age: int) -> None:
+        """Tells how much fare is for a particular age"""
+        if 18 <= age <= 60:
+            print("The fare of this bus ride is $5.00.")
+        else:
+            print("You ride free!~")
+
+
 a_vehicle = Vehicle()
 a_vehicle.name = "Super Fast Ferrari"
 a_vehicle.max_speed = 372
 a_vehicle.capacity = 2
 a_vehicle.vroom()
 
+a_bus = Bus()
+a_bus.name = "TransLink Bus - 407"
+a_bus.capacity = 35
+a_bus.max_speed = 140
+a_bus.fare(10)
+a_bus.fare(-1)
+a_bus.fare(0)
+a_bus.fare(17)
+a_bus.fare(18)
+a_bus.fare(60)
+a_bus.fare(61)
+a_bus.vroom()

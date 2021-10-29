@@ -15,7 +15,13 @@ REACH THE SAFEHOUSE BEFORE THE MAN GON GETCHU.
 
 CHOICES = """
     --- Your Choices ---
+    D - Refuel
+    E - Current Status
     Q - Quit the game.
     ---
     
+"""
+
+REFUEL = """-------You filled the fuel tank.
+-------The agents got closer...
 """

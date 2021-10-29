@@ -1,5 +1,6 @@
 # Midnight Rider
 
+import random
 import sys
 import textwrap
 import time
@@ -8,13 +9,9 @@ import midnight_rider_text
 
 # A text-based game of intrigue and illusion
 
-
-def typerwriter_effect(text: str) -> None:
-    """Print out to console with a typewriter effect."""
-    for char in textwrap.dedent(text):
-        time.sleep(0.05)
-        sys.stdout.write(char)
-        sys.stdout.flush()
+# CONSTANTS
+MAX_TOFU = 30
+MAX_FUEL = 50
 
 
 class Game:
@@ -22,10 +19,18 @@ class Game:
 
     Attribute:
         done: describes if the game is finished or not - boolean
-
+        distance_travelled: describes the distance that we've travelled so far
+        amount_of_tofu: how much tofu we have left in our inventory
+        agents_distance: describes the distance between the player and the agents
+        fuel: describes the amount of fuel remaining, starts at 50
     """
+
     def __init__(self):
         self.done = False
+        self.distance_travelled = 0
+        self.amount_tofu = MAX_TOFU
+        self.agents_distance = -20
+        self.fuel = MAX_FUEL
 
     def introduction(self) -> None:
         """Print the introduction text"""
@@ -50,9 +55,24 @@ class Game:
         user_choice = input().strip(",.?!").lower()
 
         # Based on their choice, change the attributes of the class
-        if user_choice == "q":
-            self.done = True
+        if user_choice == "d":
+            # TODO: refuel or recharge
+            self.fuel = MAX_FUEL
 
+            # Decide how far the agents go
+            self.agents_distance += random.randrange(7, 15)
+
+            # Give the user feedback
+            print(midnight_rider_text.REFUEL)
+        elif user_choice == "e":
+            print("---Status Check---")
+            print(f"Distance Travelled: {self.distance_travelled} kms")
+            print(f"Fuel Remaining: {self.fuel} L")
+            print(f"Tofu Left: {self.amount_tofu}")
+            print(f"Agent's Distance: {abs(self.agents_distance)} kms behind")
+            print("------")
+        elif user_choice == "q":
+            self.done = True
 
 
 def main() -> None:
@@ -64,7 +84,6 @@ def main() -> None:
         game.show_choices()
         game.get_choice()
         # TODO: Check win/lose conditions
-
 
 
 if __name__ == "__main__":

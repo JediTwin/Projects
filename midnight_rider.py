@@ -55,12 +55,36 @@ class Game:
         user_choice = input().strip(",.?!").lower()
 
         # Based on their choice, change the attributes of the class
-        if user_choice == "d":
+        # TODO: Implement eating/hunger
+        agents_distance_now = random.randrange(7, 15)
+        if user_choice == "b":
+            # Move the player
+            player_distance_now = random.randrange(5, 11)
+            self.distance_travelled += player_distance_now
+            # Move the agents
+            self.agents_distance += agents_distance_now - player_distance_now
+            # Burn the fuel
+            self.fuel -= random.randrange(3, 9)
+            # Give player feedback
+            print(f"\n-------VROOOOOOM.")
+            print(f"-------You travelled {player_distance_now} kms.\n")
+        elif user_choice == "c":
+            # Move the player
+            player_distance_now = random.randrange(10, 16)
+            self.distance_travelled += player_distance_now
+            # Move the agents
+            self.agents_distance += agents_distance_now - player_distance_now
+            # Burn the fuel
+            self.fuel -= random.randrange(5, 11)
+            # Give player feedback
+            print(f"\n-------ZOOOOOOOOM.")
+            print(f"-------You travelled {player_distance_now} kms.\n")
+        elif user_choice == "d":
             # TODO: refuel or recharge
             self.fuel = MAX_FUEL
 
             # Decide how far the agents go
-            self.agents_distance += random.randrange(7, 15)
+            self.agents_distance += agents_distance_now
 
             # Give the user feedback
             print(midnight_rider_text.REFUEL)

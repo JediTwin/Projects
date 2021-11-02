@@ -23,6 +23,8 @@ class Game:
         amount_of_tofu: how much tofu we have left in our inventory
         agents_distance: describes the distance between the player and the agents
         fuel: describes the amount of fuel remaining, starts at 50
+        hunger: describes how hungry the player is, represented by an integer between 0-50,
+            if hunger goes beyond 50, the game is over
     """
 
     def __init__(self):
@@ -31,12 +33,13 @@ class Game:
         self.amount_tofu = MAX_TOFU
         self.agents_distance = -20
         self.fuel = MAX_FUEL
+        self.hunger = 0
 
     def introduction(self) -> None:
         """Print the introduction text"""
         self.typewriter_effect(midnight_rider_text.INTRODUCTION)
 
-    def typewriter_effect(self, text: str):
+    def typewriter_effect(self, text: str) -> None:
         """Print out to console with a typewriter effect"""
         for char in textwrap.dedent(text):
             time.sleep(0.05)
@@ -50,37 +53,56 @@ class Game:
         time.sleep(1)
 
     def get_choice(self) -> None:
-        """Get the user's choice and changes the environment"""
+        """Gets the user's choice and changes
+        the environment"""
         # Get the user's response
         user_choice = input().strip(",.?!").lower()
 
-        # Based on their choice, change the attributes of the class
-        # TODO: Implement eating/hunger
+        # Based on their choice, change the attributes
+        # of the class
+
         agents_distance_now = random.randrange(7, 15)
-        if user_choice == "b":
-            # Move the player
-            player_distance_now = random.randrange(5, 11)
+
+        # TODO: Implement eating/hunger
+        if user_choice == "a":
+            if self.amount_tofu > 0:
+                self.amount_tofu -= 1
+                self.hunger = 0
+                print(midnight_rider_text.EAT_TOFU)
+            else:
+                # Tell the player they don't have tofu
+                print(midnight_rider_text.NO_TOFU)
+        elif user_choice == "b":
+            # Move the player slowly
+            player_distance_now = random.randrange(5, 10)
             self.distance_travelled += player_distance_now
+
             # Move the agents
             self.agents_distance += agents_distance_now - player_distance_now
-            # Burn the fuel
-            self.fuel -= random.randrange(3, 9)
-            # Give player feedback
-            print(f"\n-------VROOOOOOM.")
-            print(f"-------You travelled {player_distance_now} kms.\n")
+
+            # Burn fuel
+            self.fuel -= random.randrange(3, 8)
+
+            # Give the player some feedback
+            print(f"\n-------VROOOOM")
+            print(f"-------You traveled {player_distance_now} kms.\n")
+
         elif user_choice == "c":
-            # Move the player
+            # Move the player quickly
             player_distance_now = random.randrange(10, 16)
             self.distance_travelled += player_distance_now
+
             # Move the agents
             self.agents_distance += agents_distance_now - player_distance_now
-            # Burn the fuel
+
+            # Burn fuel
             self.fuel -= random.randrange(5, 11)
-            # Give player feedback
-            print(f"\n-------ZOOOOOOOOM.")
-            print(f"-------You travelled {player_distance_now} kms.\n")
+
+            # Give the player some feedback
+            print(f"\n-------ZOOOOOOOOOOM.")
+            print(f"-------You traveled {player_distance_now} kms.\n")
+
         elif user_choice == "d":
-            # TODO: refuel or recharge
             self.fuel = MAX_FUEL
 
             # Decide how far the agents go
@@ -88,20 +110,33 @@ class Game:
 
             # Give the user feedback
             print(midnight_rider_text.REFUEL)
+            time.sleep(2)
         elif user_choice == "e":
             print("---Status Check---")
-            print(f"Distance Travelled: {self.distance_travelled} kms")
-            print(f"Fuel Remaining: {self.fuel} L")
-            print(f"Tofu Left: {self.amount_tofu}")
+            print(f"Distance Traveled: {self.distance_travelled} kms")
+            print(f"Fuel remaining: {self.fuel} L")
+            print(f"Tofu Pieces Left: {self.amount_tofu}")
             print(f"Agent's Distance: {abs(self.agents_distance)} kms behind")
             print("------")
+            time.sleep(2)
         elif user_choice == "q":
             self.done = True
+
+        # Increase hunger
+        if user_choice in ["b", "c", "d"]:
+            self.hunger += random.randrange(8, 18)
+
+    def upkeep(self) -> None:
+        """Give the user reminders of hunger"""
+        if self.hunger > 40:
+            print(midnight_rider_text.SEVERE_HUNGER)
+        elif self.hunger > 25:
+            print(midnight_rider_text.HUNGER)
 
 
 def main() -> None:
     game = Game()  # starting a new game
-    game.introduction()
+    # game.introduction()
 
     # Main Loop:
     while not game.done:

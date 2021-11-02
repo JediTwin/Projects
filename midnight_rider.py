@@ -121,6 +121,7 @@ class Game:
             time.sleep(2)
         elif user_choice == "q":
             self.done = True
+        time.sleep(2)
 
         # Increase hunger
         if user_choice in ["b", "c", "d"]:
@@ -132,6 +133,8 @@ class Game:
             print(midnight_rider_text.SEVERE_HUNGER)
         elif self.hunger > 25:
             print(midnight_rider_text.HUNGER)
+
+        time.sleep(1)
 
 
 def main() -> None:

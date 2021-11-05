@@ -36,15 +36,15 @@ EAT_TOFU = """-------Mmmmm. Soybean goodness.
 NO_TOFU = """-------You have no tofu left.
 """
 
-SEVERE_HUNGER = """*******Your stomach rumbles.
+SEVERE_HUNGER = """\n*******Your stomach rumbles.
 *******You need to eat something quick.
 """
 
-HUNGER = """*******Your hunger is small but manageable.
+HUNGER = """\n*******Your hunger is small but manageable.
 """
 
 ENDGAME_TEXT = [
-    """The game has ended. Thanks for playing""",     # Quit the game
+    """\n\nThe game has ended. Thanks for playing""",     # Quit the game
     """\n\nTHE AGENTS HAVE CLOSED IN ON YOU.
 THERE ARE AT LEAST 20 CARS SURROUNDING YOU.
 THE LEAD CAR BUMPS YOUR PASSENGER SIDE.
@@ -75,7 +75,7 @@ IT WAS IN THE CAR THE WHOLE TIME.
 
 YOU DRIFT OFF INTO UNCONSCIOUSNESS...
 
------GAME OVER-----""",     # LOSE - Agents have caught up
+-----GAME OVER-----\n""",     # LOSE - Agents have caught up
     """\n\nYOUR CAR SPUTTERS AND SEEMS TO LET OUT
 A BIG SIGH. THERE's NO MORE FUEL LEFT.
 
@@ -88,7 +88,7 @@ YOU CAR.
 
 YOU FAILED.
 
------GAME OVER-----""", # LOSE - Fuel runs out
+-----GAME OVER-----\n""", # LOSE - Fuel runs out
     """\n\nYOUR STOMACH IS EMPTY.
 WHO KNEW THAT WHAT THE DOCTOR SAID WAS TRUE,
 THAT HUMAN/ROBOT HYBRIDS WOULD NEED
@@ -98,5 +98,5 @@ YOUR HUMAN EYES CLOSE.
 THE LAST THING THAT YOU HEAR ARE SIRENS.
 THEY GOTCHU. THEY GOT THE CAR.
 WE FAILED...
-----GAME OVER----""", # LOSE - Perish because of hunger
+----GAME OVER----\n""", # LOSE - Perish because of hunger
 ]

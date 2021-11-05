@@ -148,20 +148,25 @@ class Game:
     def check_endgame(self) -> None:
         """CHeck to see if win/lose conditions are met.
         If they're met, change the self.done flag"""
+        # LOSE - Agents have caught up
         if self.agents_distance >= 0:
             # Allows us to quit the while loop
             self.done = True
             # Helps with printing the right ending
             self.endgame_reason = ENDGAME_REASONS["LOSE_AGENTS"]
+        # LOSE - Fuel runs out
         elif self.fuel <= 0:
             self.done = True
 
             self.endgame_reason = ENDGAME_REASONS["LOSE_FUEL"]
-        elif self.hunger >= 50:
+        # LOSE - Perish from hunger
+        elif self.hunger >= MAX_HUNGER:
             self.done = True
 
             self.endgame_reason = ENDGAME_REASONS["LOSE_HUNGER"]
         # TODO: WIN - Reach the goal
+        elif self.distance_travelled >= 100:
+            pass
 
 
 def main() -> None:

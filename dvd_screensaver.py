@@ -98,7 +98,7 @@ def main() -> None:
         print(f"x: {dvd_image.x}, y: {dvd_image.y}")
 
         # --------- DRAW THE ENVIRONMENT
-        screen.fill(WHITE)
+        screen.fill(BLACK)
 
         pygame.draw.rect(screen, dvd_image.colour, dvd_image.rect())
 

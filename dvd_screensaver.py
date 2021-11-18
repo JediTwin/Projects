@@ -37,8 +37,8 @@ class Dvdimage:
         self.width = 160
         self.height = 71
         self.img = pygame.image.load("./images/dvdimage.png")
-        self.x_vel = 6
-        self.y_vel = 4
+        self.x_vel = 5
+        self.y_vel = 3
 
     def rect(self) -> pygame.rect:
         """Returns a pygame.rect that represents the dvd_image"""

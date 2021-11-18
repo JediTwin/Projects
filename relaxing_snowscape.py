@@ -35,13 +35,20 @@ class Snowflake:
             random.randrange(0, SCREEN_HEIGHT),
         ]
 
-        self.y_vel = 2
+        self.y_vel = 4
         self.colour = WHITE
 
 
     def update(self):
         """Updates the position of the Snow"""
         self.coords[1] += self.y_vel
+
+        # Reset position of snowflake if it reaches bottom
+        if self.coords[1] > SCREEN_HEIGHT:
+            self.coords = [
+                random.randrange(0, SCREEN_WIDTH),
+                random.randrange(-25, 0)
+            ]
 
 
 def main() -> None:
@@ -53,8 +60,12 @@ def main() -> None:
     # Create some local variables that describe the environment
     done = False
     clock = pygame.time.Clock()
+    num_snowflakes = 100
+    snowflakes = []
+    # Create snowflakes
 
-    snow = Snowflake()
+    for i in range(num_snowflakes):
+        snowflakes.append(Snowflake())
 
     # ------------- MAIN LOOP
     while not done:
@@ -63,13 +74,14 @@ def main() -> None:
             if event.type == pygame.QUIT:
                 done = True
         # --------- CHANGE ENVIRONMENT
-        snow.update()
+        snowflakes.update()
 
         # --------- DRAW THE ENVIRONMENT
         screen.fill(BLACK)
 
         # Draw the snowflake
-        pygame.draw.circle(screen, snow.colour, snow.coords, snow.size)
+        for snowflake in snowflakes:
+            pygame.draw.circle(screen, snowflakes.colour, snowflakes.coords, snowflakes.size)
 
         # Update screen
         pygame.display.flip()

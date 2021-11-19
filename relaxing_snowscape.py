@@ -35,7 +35,7 @@ class Snowflake:
             random.randrange(0, SCREEN_HEIGHT),
         ]
 
-        self.y_vel = 3
+        self.y_vel = 2
         self.colour = WHITE
 
     def update(self):
@@ -66,13 +66,13 @@ def main() -> None:
     for i in range(num_snowflakes-150):
         close_snowflake = Snowflake()
         close_snowflake.size = random.choice([4, 5, 6])
-        close_snowflake.y_vel = random.choice([5, 6, 7])
+        close_snowflake.y_vel = random.choice([4, 5, 6])
         snowflakes.append(close_snowflake)
 
     for i in range(num_snowflakes-100):
         close_snowflake = Snowflake()
         close_snowflake.size = random.choice([3, 4])
-        close_snowflake.y_vel = random.choice([4, 5])
+        close_snowflake.y_vel = random.choice([3, 4])
         snowflakes.append(close_snowflake)
 
     for i in range(num_snowflakes):

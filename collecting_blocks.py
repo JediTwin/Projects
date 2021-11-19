@@ -74,6 +74,10 @@ def main() -> None:
             if event.type == pygame.QUIT:
                 done = True
         # --------- CHANGE ENVIRONMENT
+        # Process Player movement based on mouse pos
+        mouse_pos = pygame.mouse.get_pos()
+        player.rect.x = mouse_pos[0] - 10
+        player.rect.y = mouse_pos[1] - 7
 
         # --------- DRAW THE ENVIRONMENT
         screen.fill(BG_COLOUR)

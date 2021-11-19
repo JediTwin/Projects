@@ -22,9 +22,9 @@ class Snowflake:
     """Snowflake on the screen
 
     Attributes:
-        size: radius of snowflace in px
+        size: radius of snowflake in px
         coords: {x: int, y: int}
-        velocity: falling velocity in px/sec
+        y_vel: falling velocity in px/sec
         colour: (r, g, b)
     """
     def __init__(self):
@@ -35,9 +35,8 @@ class Snowflake:
             random.randrange(0, SCREEN_HEIGHT),
         ]
 
-        self.y_vel = 4
+        self.y_vel = 3
         self.colour = WHITE
-
 
     def update(self):
         """Updates the position of the Snow"""
@@ -60,9 +59,21 @@ def main() -> None:
     # Create some local variables that describe the environment
     done = False
     clock = pygame.time.Clock()
-    num_snowflakes = 100
+    num_snowflakes = 250
     snowflakes = []
     # Create snowflakes
+
+    for i in range(num_snowflakes-150):
+        close_snowflake = Snowflake()
+        close_snowflake.size = random.choice([4, 5, 6])
+        close_snowflake.y_vel = random.choice([5, 6, 7])
+        snowflakes.append(close_snowflake)
+
+    for i in range(num_snowflakes-100):
+        close_snowflake = Snowflake()
+        close_snowflake.size = random.choice([3, 4])
+        close_snowflake.y_vel = random.choice([4, 5])
+        snowflakes.append(close_snowflake)
 
     for i in range(num_snowflakes):
         snowflakes.append(Snowflake())
@@ -74,14 +85,15 @@ def main() -> None:
             if event.type == pygame.QUIT:
                 done = True
         # --------- CHANGE ENVIRONMENT
-        snowflakes.update()
+        for snow in snowflakes:
+            snow.update()
 
         # --------- DRAW THE ENVIRONMENT
         screen.fill(BLACK)
 
         # Draw the snowflake
-        for snowflake in snowflakes:
-            pygame.draw.circle(screen, snowflakes.colour, snowflakes.coords, snowflakes.size)
+        for snow in snowflakes:
+            pygame.draw.circle(screen, snow.colour, snow.coords, snow.size)
 
         # Update screen
         pygame.display.flip()

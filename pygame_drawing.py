@@ -1,4 +1,4 @@
-# Pygame Drawing
+# Pygame Boilerplate
 # Author: Noel Rebiffe
 # 9 November 2021
 

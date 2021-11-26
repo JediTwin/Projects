@@ -44,6 +44,7 @@ class Player(pygame.sprite.Sprite):
 
         # Create the image of the block
         self.image = pygame.image.load("./images/smb_smallmario.png")
+        self.image = pygame.transform.scale(self.image, (48, 64))
 
         # Based on the image, create a Rect for the block
         self.rect = self.image.get_rect()

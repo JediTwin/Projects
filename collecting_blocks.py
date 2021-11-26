@@ -35,9 +35,9 @@ class Player(pygame.sprite.Sprite):
     def __init__(self) -> None:
         """
         Arguments:
-        :param colour: 3-tuple (r. g. b)
-        :param width: width in pixels
-        :param height: height in pixels
+            colour: 3-tuple (r. g. b)
+            width: width in pixels
+            height: height in pixels
         """
         # Call the superclass constructor
         super().__init__()
@@ -101,8 +101,27 @@ class Enemy(pygame.sprite.Sprite):
         )
 
         # Define initial velocity
-        self.x_vel = random.choice([-4, -3, 3, 4])
-        self.y_vel = random.choice([-4, -3, 3, 4])
+        self.x_vel = random.choice([-3, -2, 2, 3])
+        self.y_vel = random.choice([-3, -2, 2, 3])
+
+    def update(self) -> None:
+        """Calculate movement"""
+        self.rect.x += self.x_vel
+        self.rect.y += self.y_vel
+
+        # Constrain movement
+        if self.rect.left < 0:
+            self.rect.left = 0
+            self.x_vel = -self.x_vel
+        if self.rect.right > SCREEN_WIDTH:
+            self.rect.right = SCREEN_WIDTH
+            self.x_vel = -self.x_vel
+        if self.rect.top < 0:
+            self.rect.top = 0
+            self.y_vel = -self.y_vel
+        if self.rect.bottom > SCREEN_HEIGHT:
+            self.rect.bottom = SCREEN_HEIGHT
+            self.y_vel = -self.y_vel
 
 
 def main() -> None:
@@ -164,6 +183,9 @@ def main() -> None:
         mouse_pos = pygame.mouse.get_pos()
         player.rect.x = mouse_pos[0] - 6
         player.rect.y = mouse_pos[1] - 8
+
+        # Update the location of all the sprites
+        all_sprites.update()
 
         # Check all collisions between players and the blocks
         blocks_collided = pygame.sprite.spritecollide(player, block_sprites, True)

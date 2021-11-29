@@ -4,6 +4,7 @@
 
 import random
 import pygame
+import time
 
 pygame.init()
 
@@ -134,8 +135,12 @@ def main() -> None:
     done = False
     clock = pygame.time.Clock()
     num_blocks = 100
-    num_enemies = 10
+    num_enemies = 7
     score = 0
+    time_start = time.time()
+    time_invincible = 5
+
+    font = pygame.font.SysFont("Helvetica", 25)
 
     # Create a group of sprites to store ALL SPRITES
     all_sprites = pygame.sprite.Group()
@@ -192,12 +197,28 @@ def main() -> None:
         for block in blocks_collided:
             score += 1
             print(f"Score: {score}")
+            if score >= num_blocks:
+                done = True
+                print("YOU WIN")
+
+        # Check all collisions between players and the enemies
+        enemies_collided = pygame.sprite.spritecollide(player, enemy_sprites, False)
+        if time.time() - time_start > time_invincible:
+            for enemy in enemies_collided:
+                done = True
+                print(f"GAME OVER")
 
         # --------- DRAW THE ENVIRONMENT
         screen.fill(BG_COLOUR)
 
         # Draw all sprites
         all_sprites.draw(screen)
+
+        # Draw the score on the screen
+        screen.blit(
+            font.render(f"Score: {score}", True, BLACK),
+            (5, 5)
+        )
 
         # Update screen
         pygame.display.flip()

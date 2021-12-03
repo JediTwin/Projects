@@ -35,12 +35,6 @@ class Player(pygame.sprite.Sprite):
         hp: describes how much health the player has
     """
     def __init__(self) -> None:
-        """
-        Arguments:
-            colour: 3-tuple (r. g. b)
-            width: width in pixels
-            height: height in pixels
-        """
         # Call the superclass constructor
         super().__init__()
 
@@ -57,7 +51,7 @@ class Player(pygame.sprite.Sprite):
 
     def hp_remaining(self) -> int:
         """Return the percent of health remaining"""
-        return self.hp / 250
+        return int(self.hp / 250)
 
 
 class Block(pygame.sprite.Sprite):
@@ -146,7 +140,15 @@ def main() -> None:
     num_enemies = 7
     score = 0
     time_start = time.time()
-    time_invincible = 5
+    time_invincible = 5         # seconds
+    game_state = "running"
+    endgame_cooldown = 5        # seconds
+    time_ended = 0.0
+
+    endgame_messages = {
+        "win": "Congratulations, you won!",
+        "lose": "Sorry, they got you. Play again!",
+    }
 
     font = pygame.font.SysFont("Helvetica", 25)
 
@@ -204,16 +206,23 @@ def main() -> None:
         blocks_collided = pygame.sprite.spritecollide(player, block_sprites, True)
         for block in blocks_collided:
             score += 1
-            if score >= num_blocks:
-                done = True
-                print("YOU WIN")
+            if score == num_blocks:
+                game_state = "won"
+
+                # Set the time that the game was won
+                if time_ended == 0:
+                    time_ended = time.time()
+
+                # Set parameters to keep the screen alive
+                # Wait 4 seconds to kill the screen
+                if time.time() - time_ended >= endgame_cooldown:
+                    done = True
 
         # Check all collisions between players and the enemies
         enemies_collided = pygame.sprite.spritecollide(player, enemy_sprites, False)
         if time.time() - time_start > time_invincible:
             for enemy in enemies_collided:
                 player.hp -= 1
-                print(player.hp) # debugging
                 if player.hp == 0:
                     done = True
                     print("GAME OVER")
@@ -236,6 +245,13 @@ def main() -> None:
         # Draw the foreground rectangle
         life_remaining = 215 - int(215 * player.hp_remaining())
         pygame.draw.rect(screen, BLUE, [580, 5, life_remaining, 20])
+
+        # If we've won, draw the text on the screen
+        if game_state == "won":
+            screen.blit(
+                font.render(endgame_messages["win"], True, BLACK),
+                (SCREEN_WIDTH /2, SCREEN_HEIGHT / 2)
+            )
 
         # Update screen
         pygame.display.flip()

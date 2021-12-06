@@ -51,7 +51,7 @@ class Player(pygame.sprite.Sprite):
 
     def hp_remaining(self) -> int:
         """Return the percent of health remaining"""
-        return int(self.hp / 250)
+        return self.hp / 250
 
 
 class Block(pygame.sprite.Sprite):
@@ -142,7 +142,7 @@ def main() -> None:
     time_start = time.time()
     time_invincible = 5         # seconds
     game_state = "running"
-    endgame_cooldown = 5        # seconds
+    endgame_wait = 5        # seconds
     time_ended = 0.0
 
     endgame_messages = {
@@ -193,6 +193,29 @@ def main() -> None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
+
+        # End game listener
+        if score == num_blocks:
+            game_state = "won"
+
+            # Set the time that the game was won
+            if time_ended == 0.0:
+                time_ended = time.time()
+
+            # Set parameters to keep the screen alive
+            # Wait 4 seconds to kill the screen
+            if time.time() - time_ended >= endgame_wait:
+                done = True
+
+        if player.hp == 0:
+            game_state = "lose"
+
+            if time_ended == 0.0:
+                time_ended = time.time()
+
+            if time.time() - time_ended >= endgame_wait:
+                done = True
+
         # --------- CHANGE ENVIRONMENT
         # Process Player movement based on mouse pos
         mouse_pos = pygame.mouse.get_pos()
@@ -202,30 +225,19 @@ def main() -> None:
         # Update the location of all the sprites
         all_sprites.update()
 
-        # Check all collisions between players and the blocks
-        blocks_collided = pygame.sprite.spritecollide(player, block_sprites, True)
-        for block in blocks_collided:
-            score += 1
-            if score == num_blocks:
-                game_state = "won"
-
-                # Set the time that the game was won
-                if time_ended == 0:
-                    time_ended = time.time()
-
-                # Set parameters to keep the screen alive
-                # Wait 4 seconds to kill the screen
-                if time.time() - time_ended >= endgame_cooldown:
-                    done = True
-
         # Check all collisions between players and the enemies
         enemies_collided = pygame.sprite.spritecollide(player, enemy_sprites, False)
+
+        # Check all collisions between players and the blocks
         if time.time() - time_start > time_invincible:
-            for enemy in enemies_collided:
-                player.hp -= 1
-                if player.hp == 0:
-                    done = True
-                    print("GAME OVER")
+            if game_state == "running":
+                for enemy in enemies_collided:
+                    player.hp -= 1
+
+                # Check for collision with blocks
+                blocks_collided = pygame.sprite.spritecollide(player, block_sprites, True)
+                for block in blocks_collided:
+                    score += 1
 
         # --------- DRAW THE ENVIRONMENT
         screen.fill(BG_COLOUR)
@@ -239,10 +251,10 @@ def main() -> None:
             (5, 5)
         )
 
-        # Draw the health bar
+        # Draw a health bar
         # Draw the background rectangle
         pygame.draw.rect(screen, GREEN, [580, 5, 215, 20])
-        # Draw the foreground rectangle
+        # Draw the foreground rectangle which is the remaining health
         life_remaining = 215 - int(215 * player.hp_remaining())
         pygame.draw.rect(screen, BLUE, [580, 5, life_remaining, 20])
 
@@ -250,7 +262,12 @@ def main() -> None:
         if game_state == "won":
             screen.blit(
                 font.render(endgame_messages["win"], True, BLACK),
-                (SCREEN_WIDTH /2, SCREEN_HEIGHT / 2)
+                (SCREEN_WIDTH / 3, SCREEN_HEIGHT / 3)
+            )
+        elif game_state == "lose":
+            screen.blit(
+                font.render(endgame_messages["lose"], True, BLACK),
+                (SCREEN_WIDTH / 3, SCREEN_HEIGHT / 3)
             )
 
         # Update screen

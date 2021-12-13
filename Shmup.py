@@ -118,7 +118,7 @@ class Bullet(pygame.sprite.Sprite):
         super().__init__()
 
         self.image = pygame.image.load("./images/bullet.png")
-        self.image = pygame.transform.scale(self.image, (36, 36))
+        self.image = pygame.transform.scale(self.image, (16, 16))
         self.rect = self.image.get_rect()
 
         # Set the middle of the bullet to be at coords
@@ -184,7 +184,6 @@ def main() -> None:
             if event.type == pygame.QUIT:
                 done = True
             if event.type == pygame.MOUSEBUTTONUP:
-
                 # Can't create a bullet when:
                 if len(bullet_sprites) < 3 and time.time() - time_start > time_invincible:
                     # Create a bullet
@@ -193,11 +192,7 @@ def main() -> None:
                     bullet_sprites.add(bullet)
                     all_sprites.add(bullet)
 
-                    if bullet.rect.y < 0:
-                        bullet_sprites.remove(bullet)
-                        all_sprites.remove(bullet)
-
-        if player.hp == 0:
+        if player.hp <= 0:
             game_state = "lose"
 
             if time_ended == 0.0:
@@ -208,13 +203,20 @@ def main() -> None:
             if time.time() - time_ended >= endgame_wait:
                 done = True
 
+        if score == num_enemies:
+            num_enemies += 5
+            for i in range(num_enemies):
+                # Create an enemy
+                enemy = Enemy()
+                # Add it to the sprites list(enemy_sprites, all_sprites)
+                enemy_sprites.add(enemy)
+                all_sprites.add(enemy)
+
         # --------- CHANGE ENVIRONMENT
         # Process Player movement based on mouse pos
         mouse_pos = pygame.mouse.get_pos()
         player.rect.x = mouse_pos[0] - player.rect.width / 2
         player.rect.y = mouse_pos[1] - player.rect.height / 2
-
-        # Remove bullets that leave the screen
 
         # Update the location of all the sprites
         all_sprites.update()
@@ -222,9 +224,18 @@ def main() -> None:
         # Check all collisions between players and the enemies
         enemies_collided = pygame.sprite.spritecollide(player, enemy_sprites, False)
 
-        # Check for collisions between bullets and enemies
+        # Remove bullets that leave the screen
+        for bullet in bullet_sprites:
+            enemies_bullet_collided = pygame.sprite.spritecollide(bullet, enemy_sprites, True)
 
-        # Check all collisions between players and the blocks
+            if bullet.rect.y < 0:
+                bullet.kill()
+
+            if len(enemies_bullet_collided) > 0:
+                bullet.kill()
+                score += 1
+
+        # Check health
         if time.time() - time_start > time_invincible:
             if game_state == "running":
                 for enemy in enemies_collided:

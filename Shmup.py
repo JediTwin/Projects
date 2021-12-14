@@ -118,7 +118,7 @@ class Bullet(pygame.sprite.Sprite):
         super().__init__()
 
         self.image = pygame.image.load("./images/bullet.png")
-        self.image = pygame.transform.scale(self.image, (16, 16))
+        self.image = pygame.transform.scale(self.image, (18, 18))
         self.rect = self.image.get_rect()
 
         # Set the middle of the bullet to be at coords
@@ -146,9 +146,12 @@ def main() -> None:
     game_state = "running"
     endgame_wait = 5        # seconds
     time_ended = 0.0
+    num_bombs = 1
+
+    with open("./data/shmup_highscore.txt") as f:
+        high_score = int(f.readline().strip())
 
     endgame_messages = {
-        "win": "Congratulations, you won!",
         "lose": "Sorry, they got you. Play again!",
     }
 
@@ -158,17 +161,6 @@ def main() -> None:
     all_sprites = pygame.sprite.Group()
     enemy_sprites = pygame.sprite.Group()
     bullet_sprites = pygame.sprite.Group()
-
-    # Create all the block sprites and add to block_sprites
-
-    # Create enemy sprites
-    for i in range(num_enemies):
-        # Create an enemy
-        enemy = Enemy()
-
-        # Add it to the sprites list(enemy_sprites, all_sprites)
-        enemy_sprites.add(enemy)
-        all_sprites.add(enemy)
 
     # Create the Player Block
     player = Player()
@@ -192,6 +184,11 @@ def main() -> None:
                     bullet_sprites.add(bullet)
                     all_sprites.add(bullet)
 
+            # TODO: bombs
+            if pygame.key.get_pressed()[pygame.K_SPACE]:
+                if num_bombs > 0:
+                    pass
+
         if player.hp <= 0:
             game_state = "lose"
 
@@ -203,20 +200,20 @@ def main() -> None:
             if time.time() - time_ended >= endgame_wait:
                 done = True
 
-        if score == num_enemies:
-            num_enemies += 5
+        # --------- CHANGE ENVIRONMENT
+        # Process Player movement based on mouse pos
+        mouse_pos = pygame.mouse.get_pos()
+        player.rect.x = mouse_pos[0] - player.rect.width / 2
+        player.rect.y = mouse_pos[1] - player.rect.height / 2
+
+        if len(enemy_sprites) < 1:
             for i in range(num_enemies):
                 # Create an enemy
                 enemy = Enemy()
                 # Add it to the sprites list(enemy_sprites, all_sprites)
                 enemy_sprites.add(enemy)
                 all_sprites.add(enemy)
-
-        # --------- CHANGE ENVIRONMENT
-        # Process Player movement based on mouse pos
-        mouse_pos = pygame.mouse.get_pos()
-        player.rect.x = mouse_pos[0] - player.rect.width / 2
-        player.rect.y = mouse_pos[1] - player.rect.height / 2
+            num_enemies += 5
 
         # Update the location of all the sprites
         all_sprites.update()
@@ -253,6 +250,11 @@ def main() -> None:
             (5, 5)
         )
 
+        screen.blit(
+            font.render(f"High-score: {high_score}", True, BLACK),
+            (5, 28)
+        )
+
         # Draw a health bar
         # Draw the background rectangle
         pygame.draw.rect(screen, GREEN, [580, 5, 215, 20])
@@ -260,13 +262,8 @@ def main() -> None:
         life_remaining = 215 - int(215 * player.hp_remaining())
         pygame.draw.rect(screen, BLUE, [580, 5, life_remaining, 20])
 
-        # If we've won, draw the text on the screen
-        if game_state == "won":
-            screen.blit(
-                font.render(endgame_messages["win"], True, BLACK),
-                (SCREEN_WIDTH / 3, SCREEN_HEIGHT / 3)
-            )
-        elif game_state == "lose":
+        # Draw lose text
+        if game_state == "lose":
             screen.blit(
                 font.render(endgame_messages["lose"], True, BLACK),
                 (SCREEN_WIDTH / 3, SCREEN_HEIGHT / 3)
@@ -277,6 +274,13 @@ def main() -> None:
 
         # --------- CLOCK TICK
         clock.tick(75)
+
+    # Update the high score if the current score is the highest
+    with open("./data/shmup_highscore.txt", "w") as f:
+        if score > high_score:
+            f.write(str(score))
+        else:
+            f.write(str(high_score))
 
 
 if __name__ == "__main__":

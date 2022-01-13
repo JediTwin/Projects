@@ -41,7 +41,7 @@ class Player(pygame.sprite.Sprite):
         # Create the image of the block
         self.image = pygame.image.load("./images/smb_smallmario.png")
         # Scale up player sprite
-        self.image = pygame.transform.scale(self.image, (48, 64))
+        self.image = pygame.transform.scale(self.image, (32, 40))
 
         # Based on the image, create a Rect for the block
         self.rect = self.image.get_rect()
@@ -74,7 +74,7 @@ class Enemy(pygame.sprite.Sprite):
         # Define the initial location
         self.rect.x, self.rect.y = (
             random.randrange(SCREEN_WIDTH),
-            random.randrange(SCREEN_HEIGHT),
+            random.randrange(int(SCREEN_HEIGHT / 2)),
         )
 
         # Define initial velocity
@@ -124,7 +124,7 @@ class Bullet(pygame.sprite.Sprite):
         # Set the middle of the bullet to be at coords
         self.rect.center = coords
 
-        self.y_vel = 3
+        self.y_vel = 6
 
     def update(self):
         self.rect.y -= self.y_vel

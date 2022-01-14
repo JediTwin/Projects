@@ -130,6 +130,33 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.y -= self.y_vel
 
 
+class Bomb(pygame.sprite.Sprite):
+    """Bomb
+
+    Attrubutes:
+        image: visual representation
+        rect: mathematical representation
+        y_vel: y velocity in px/sec
+    """
+    def __init__(self, coords: tuple):
+        """
+
+        Arguments:
+            coords: tuple of (x, y) to represent the initial location
+        """
+        super().__init__()
+
+        self.image = pygame.Surface(24, 24)
+        self.rect = self.image.get_rect()
+
+        self.rect.center = coords
+
+        self.y_vel = 3
+
+    def update(self):
+        self.rect.y -= self.y_vel
+
+
 def main() -> None:
     """Driver of the Python script"""
     # Create the screen
@@ -142,11 +169,12 @@ def main() -> None:
     num_enemies = 15
     score = 0
     time_start = time.time()
-    time_invincible = 5         # seconds
+    time_invincible = 3         # seconds
     game_state = "running"
     endgame_wait = 5        # seconds
     time_ended = 0.0
     num_bombs = 1
+    round_number = 1
 
     with open("./data/shmup_highscore.txt") as f:
         high_score = int(f.readline().strip())
@@ -155,7 +183,7 @@ def main() -> None:
         "lose": "Sorry, they got you. Play again!",
     }
 
-    font = pygame.font.SysFont("Helvetica", 25)
+    font = pygame.font.Font("./data/PixeloidSans.ttf", 25)
 
     # Create a group of sprites to store ALL SPRITES
     all_sprites = pygame.sprite.Group()
@@ -214,6 +242,7 @@ def main() -> None:
                 enemy_sprites.add(enemy)
                 all_sprites.add(enemy)
             num_enemies += 5
+            round_number += 1
 
         # Update the location of all the sprites
         all_sprites.update()
